@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 
 app.route('/lessons')
     .get(async (req, res) => {
+        res.sendFile(path.join(__dirname, '/emptyPage.html'));
+
         const lessons = await fs.readFile('./lessons.json', 'utf-8', (err) => {
             if (err) throw err;
         });
