@@ -6,7 +6,6 @@ const fs = require('fs/promises');
 
 const PORT = 4000;
 
-app.use(express.static('public'));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
