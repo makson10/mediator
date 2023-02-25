@@ -16,21 +16,20 @@ app.get('/', (req, res) => {
 });
 
 
-app.route('/lessons')
-    .get(async (req, res) => {
-        const lessons = await fs.readFile('./lessons.json', 'utf-8', (err) => {
-            if (err) throw err;
-        });
-
-        res.sendFile(path.join(__dirname, '/emptyPage.html'));
-    })
-    .post((req, res) => {
-        const lessonsData = req.body;
-
-        fs.writeFile('./lessons.json', JSON.stringify(lessonsData));
-
-        res.status(200).send('Your data was saved');
+app.get('/lessons', async (req, res) => {
+    const lessons = await fs.readFile('./lessons.json', 'utf-8', (err) => {
+        if (err) throw err;
     });
+
+    res.sendFile(path.join(__dirname, '/emptyPage.html'));
+});
+app.post('/lessons', (req, res) => {
+    const lessonsData = req.body;
+
+    fs.writeFile('./lessons.json', JSON.stringify(lessonsData));
+
+    res.status(200).send('Your data was saved');
+});
 
 // make validation: make correct order of lessons, correct time number
 
