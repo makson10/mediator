@@ -41,7 +41,7 @@ async function getDataFromDB() {
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    const data = await collection.find({}).toArray();
+    const data = await collection.find({});
     return data;
 }
 
