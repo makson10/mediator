@@ -27,7 +27,7 @@ app.route('/api/lessons')
             .catch(console.error)
             .finally(() => client.close());
 
-        res.status(200).send(lessons);
+        res.status(200).send(...lessons);
     })
     .post(async (req, res) => {
         const newLessons = req.body;
