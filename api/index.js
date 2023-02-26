@@ -1,13 +1,15 @@
+const { MongoClient } = require('mongodb');
+const mongoURL = process.env.mongoURL;
+const client = new MongoClient(mongoURL);
+
 const express = require('express');
 const app = express();
-const fs = require('fs/promises');
 const path = require('path');
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = 4000;
-const lessonsFilePath = path.join(__dirname, '../lessons.json');
+const PORT = process.env.LOCAL_PORT;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,20 +22,37 @@ app.get('/', (req, res) => {
 
 app.route('/api/lessons')
     .get(async (req, res) => {
-        const lessons = await fs.readFile(lessonsFilePath, 'utf8', (err) => {
-            if (err) throw err;
-        });
+        const lessons = await getDataFromDB()
+            .then((data) => data)
+            .catch(console.error)
+            .finally(() => client.close());
 
-        res.send(lessons);
+        res.status(200).send(lessons);
     })
     .post(async (req, res) => {
         const newLessons = req.body;
 
-        await fs.writeFile(lessonsFilePath, JSON.stringify(newLessons), (err) => {
-            if (err) throw err;
-        });
+        await insertDataToDB(newLessons);
     });
 
+
+async function getDataFromDB() {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('lessons');
+
+    const data = await collection.find({}).toArray();
+    return data;
+}
+
+async function insertDataToDB(data) {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('lessons');
+
+    await collection.deleteMany({lessons: {$exists: true}});
+    await collection.insertOne(data);
+}
 
 app.listen(PORT, () => {
     console.log(`Server was started on ${PORT}`);
