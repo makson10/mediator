@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
 app.route('/api/lessons')
     .get(async (req, res) => {
-        const lessons = await getDataFromDB()
+        const lessons = await getLessonsFromDB()
             .then((data) => data)
             .catch(console.error)
             .finally(() => client.close());
@@ -32,11 +32,119 @@ app.route('/api/lessons')
     .post(async (req, res) => {
         const newLessons = req.body;
 
-        await insertDataToDB(newLessons);
+        await insertLessonsToDB(newLessons);
     });
 
+app.route('/api/hw')
+    .get(async (req, res) => {
+        const hw = await getHWFromDB()
+            .then((data) => data)
+            .catch(console.error)
+            .finally(() => client.close());
 
-async function getDataFromDB() {
+        console.log(hw);
+
+        res.status(200).send(...hw);
+    })
+    .post(async (req, res) => {
+        const hw = req.body;
+
+        await insertHWToDB(hw);
+        res.status(200).send('All is good!');
+    });
+
+app.post('/api/hw/remove', async (req, res) => {
+    const hwName = req.body.lessonName;
+
+    await deleteOneHW(hwName);
+    res.status(200).send('All is good!');
+});
+
+app.post('/api/hw/remove/all', async (req, res) => {
+    await deleteAllHW();
+    res.status(200).send('All is good!');
+});
+
+app.get('/api/vars', async (req, res) => {
+    const vars = await getVars()
+        .then((data) => data)
+        .catch(console.error)
+        .finally(() => client.close());
+
+    res.status(200).send(vars);
+});
+
+app.post('/api/vars/setLinkMessage', async (req, res) => {
+    const linkMessageId = req.body.linkMessageId;
+
+    await insertLinkMessageId(linkMessageId);
+    res.status(200).send('All is good!');
+});
+
+
+
+async function getVars() {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('vars');
+
+    const data = await collection.find({}).toArray();
+    return data;
+}
+
+async function insertLinkMessageId(data) {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('vars');
+
+    await collection.updateOne(
+        { vars: { $exists: true } }, 
+        { $set: { "vars.LINK_MESSAGE_ID": data } }
+    );
+}
+
+async function getHWFromDB() {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('hw');
+
+    const data = await collection.find({}).toArray();
+    return data;
+}
+
+async function insertHWToDB(data) {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('hw');
+
+    await collection.updateOne(
+        { homeworks: { $exists: true } }, { $push: { homeworks: data } }
+    );
+}
+
+async function deleteOneHW(hwName) {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('hw');
+
+    await collection.updateOne(
+        { homeworks: { $exists: true } },
+        { $pull: { homeworks: { lessonName: hwName } } }
+    );
+}
+
+async function deleteAllHW() {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('hw');
+
+    await collection.updateOne(
+        { homeworks: { $exists: true } },
+        { $set: { homeworks: [] } }
+    );
+}
+
+async function getLessonsFromDB() {
     await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
@@ -45,14 +153,15 @@ async function getDataFromDB() {
     return data;
 }
 
-async function insertDataToDB(data) {
+async function insertLessonsToDB(data) {
     await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    await collection.deleteMany({lessons: {$exists: true}});
+    await collection.deleteMany({ lessons: { $exists: true } });
     await collection.insertOne(data);
 }
+
 
 app.listen(PORT, () => {
     console.log(`Server was started on ${PORT}`);
