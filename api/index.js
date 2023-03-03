@@ -35,6 +35,17 @@ app.route('/api/lessons')
         await insertLessonsToDB(newLessons);
     });
 
+app.post('/api/lessons/addLinks', async (req, res) => {
+    const lessonLinks = req.body.lessonLinks;
+
+    await addLinksToLesson(lessonLinks);
+    res.status(200).send('All is good!');
+});
+
+app.get('/api/lessons/addLinks', async (req, res) => {
+    res.status(200).send('Fuck');
+});
+
 app.route('/api/hw')
     .get(async (req, res) => {
         const hw = await getHWFromDB()
@@ -98,7 +109,18 @@ async function insertLinkMessageId(data) {
     const collection = db.collection('vars');
 
     await collection.updateOne(
-        { vars: { $exists: true } }, 
+        { vars: { $exists: true } },
+        { $set: { "vars.LINK_MESSAGE_ID": data } }
+    );
+}
+
+async function addLinksToLesson(lessonLinks) {
+    await client.connect();
+    const db = client.db('mediatorDB');
+    const collection = db.collection('lessons');
+
+    await collection.updateOne(
+        { vars: { $exists: true } },
         { $set: { "vars.LINK_MESSAGE_ID": data } }
     );
 }
