@@ -42,10 +42,6 @@ app.post('/api/lessons/addLinks', async (req, res) => {
     res.status(200).send('All is good!');
 });
 
-app.get('/api/lessons/addLinks', async (req, res) => {
-    res.status(200).send('Fuck');
-});
-
 app.route('/api/hw')
     .get(async (req, res) => {
         const hw = await getHWFromDB()
@@ -119,10 +115,25 @@ async function addLinksToLesson(lessonLinks) {
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    await collection.updateOne(
-        { vars: { $exists: true } },
-        { $set: { "vars.LINK_MESSAGE_ID": data } }
-    );
+    const existLesson = await collection.find({}).toArray();
+    const newLessons = await existLesson[0].lessons;
+
+    await newLessons.map((newLessonLink, index) => {
+        if (newLessons.length === lessonLinks.length) {
+            newLessonLink.link = lessonLinks[index][1];
+        } else {
+            if (index > lessonLinks.length - 1) return;
+            const firstLessonName = newLessonLink["title"] && newLessonLink["title"].trim().toLowerCase();
+            const secondLessonName = lessonLinks[index][0]?.trim().toLowerCase();
+
+            if (firstLessonName === secondLessonName) {
+                newLessonLink.link = lessonLinks[index][1];
+            }
+        }
+    });
+
+    await collection.deleteOne({ lessons: { $exists: true } });
+    await collection.insertOne({ lessons: newLessons, dayTitle: existLesson[0].dayTitle });
 }
 
 async function getHWFromDB() {
