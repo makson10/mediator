@@ -1,18 +1,18 @@
 {
 	"builds": [
 		{
-			"src": "/api/index.js",
+			"src": "main.js",
 			"use": "@vercel/node"
 		}
 	],
 	"routes": [
-		{ "src": "/", "dest": "/api/index.js" },
-		{ "src": "/api/lessons", "dest": "/api/index.js" },
-        { "src": "/api/lessons/addLinks", "dest": "/api/index.js" },
-		{ "src": "/api/hw", "dest": "/api/index.js" },
-		{ "src": "/api/hw/remove", "dest": "/api/index.js" },
-		{ "src": "/api/hw/remove/all", "dest": "/api/index.js" },
-		{ "src": "/api/vars", "dest": "/api/index.js" },
-		{ "src": "/api/vars/setLinkMessage", "dest": "/api/index.js" }
+		{ "src": "/", "dest": "main.js" },
+		{ "src": "/lessons", "dest": "main.js" },
+		{ "src": "/hw", "dest": "main.js" },
+		{ "src": "/vars", "dest": "main.js" },
+		{ "src": "/lessons/(.*)", "dest": "main.js" },
+		{ "src": "/hw/(.*)", "dest": "main.js" },
+		{ "src": "/vars/(.*)", "dest": "main.js" },
+		{ "src": "/history/(.*)", "dest": "main.js" }
 	]
 }
