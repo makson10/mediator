@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('@/db');
+const db = require('../db');
 
 router.get('/', async (req, res) => {
     const lessons = await db.getLessons();
@@ -18,6 +18,11 @@ router.post('/addLinks', async (req, res) => {
     const lessonLinks = req.body.lessonLinks;
 
     await db.insertLinksToLessons(lessonLinks);
+    res.sendStatus(200);
+});
+
+router.get('/unpinLessonsScheduleMessage', async (req, res) => {
+    await db.unpinLessonsScheduleMessage();
     res.sendStatus(200);
 });
 

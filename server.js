@@ -5,11 +5,11 @@ const cors = require('cors');
 
 const PORT = process.env.LOCAL_PORT;
 
-const defaultRouteRouter = require('@routes/defaultRouteRouter');
-const lessonsRouter = require('@routes/lessonsRouter');
-const hwRouter = require('@routes/hwRouter');
-const varsRouter = require('@routes/varsRouter');
-const historyRouter = require('@routes/historyRouter');
+const defaultRouteRouter = require('./routes/defaultRouteRouter');
+const lessonsRouter = require('./routes/lessonsRouter');
+const hwRouter = require('./routes/hwRouter');
+const varsRouter = require('./routes/varsRouter');
+const historyRouter = require('./routes/historyRouter');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));

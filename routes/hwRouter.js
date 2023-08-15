@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const db = require('@/db');
+const db = require('../db');
 
 router.get('/', async (req, res) => {
-    const hw = await db.getHWs();
-    res.status(200).send(hw);
+    const hw = await db.getHWs().then(data => data['homeworks']);
+    const sortedHw = await db.sortingHw(hw);
+    res.status(200).send(sortedHw);
 });
 
 router.post('/addHw', async (req, res) => {
