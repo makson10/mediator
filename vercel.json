@@ -1,19 +1,19 @@
 {
 	"builds": [
 		{
-			"src": "main.js",
+			"src": "server.js",
 			"use": "@vercel/node"
 		}
 	],
 	"routes": [
-		{ "src": "/", "dest": "main.js" },
-		{ "src": "/lessons", "dest": "main.js" },
-		{ "src": "/hw", "dest": "main.js" },
-		{ "src": "/vars", "dest": "main.js" },
-		{ "src": "/lessons/(.*)", "dest": "main.js" },
-		{ "src": "/hw/(.*)", "dest": "main.js" },
-		{ "src": "/vars/(.*)", "dest": "main.js" },
-		{ "src": "/history/(.*)", "dest": "main.js" }
+		{ "src": "/", "dest": "server.js" },
+		{ "src": "/lessons", "dest": "server.js" },
+		{ "src": "/hw", "dest": "server.js" },
+		{ "src": "/vars", "dest": "server.js" },
+		{ "src": "/lessons/(.*)", "dest": "server.js" },
+		{ "src": "/hw/(.*)", "dest": "server.js" },
+		{ "src": "/vars/(.*)", "dest": "server.js" },
+		{ "src": "/history/(.*)", "dest": "server.js" }
 	],
 	"crons": [
 		{
