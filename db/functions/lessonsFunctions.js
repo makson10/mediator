@@ -32,20 +32,23 @@ const insertLinksToLessons = async (lessonLinks) => {
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    const [existLesson] = await collection.find({}).toArray();
-    const newLessons = await existLesson.lessons;
+    const [scheduleFromDb] = await collection.find({}).toArray();
+    const existLesson = scheduleFromDb.lessons;
 
-    await newLessons.map((newLessonLink, index) => {
-        if (newLessons.length === lessonLinks.length) {
-            newLessonLink.link = lessonLinks[index][1];
+    const newLessons = await existLesson.map((lesson, index) => {
+        if (lessonLinks[index][1] === undefined && existLesson.length === lessonLinks.length) {
+            lesson.link = lessonLinks[index][0];
+            return lesson;
         } else {
             if (index > lessonLinks.length - 1) return;
-            const firstLessonName = newLessonLink["title"]?.trim().toLowerCase();
+            const firstLessonName = lesson.title?.trim().toLowerCase();
             const secondLessonName = lessonLinks[index][0]?.trim().toLowerCase();
 
             if (firstLessonName === secondLessonName) {
-                newLessonLink.link = lessonLinks[index][1];
+                lesson.link = lessonLinks[index][1];
             }
+
+            return lesson;
         }
     });
 
@@ -53,7 +56,7 @@ const insertLinksToLessons = async (lessonLinks) => {
         .deleteOne({ lessons: { $exists: true } })
         .catch(console.error);
     await collection
-        .insertOne({ lessons: newLessons, dayTitle: existLesson[0].dayTitle })
+        .insertOne({ lessons: newLessons, dayTitle: scheduleFromDb.dayTitle })
         .catch(console.error)
         .finally(() => client.close());
 }
@@ -61,9 +64,7 @@ const insertLinksToLessons = async (lessonLinks) => {
 const unpinLessonsScheduleMessage = async () => {
     const baseBotRequestURL = 'https://api.telegram.org/bot' + process.env.TELEGRAM_BOT_TOKEN;
     const vars = await getVars().then(data => data['vars']);
-    const chatId = vars['test_group_chat_id'];
-    //* For Prod:
-    // const chatId = vars['supergroup_chat_id'];
+    const chatId = vars['supergroup_chat_id'];
     const linkMessageId = vars['LINK_MESSAGE_ID'];
 
     await axios.get(
