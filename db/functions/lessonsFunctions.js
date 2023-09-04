@@ -65,13 +65,10 @@ const unpinLessonsScheduleMessage = async () => {
     const baseBotRequestURL = 'https://api.telegram.org/bot' + process.env.TELEGRAM_BOT_TOKEN;
     const vars = await getVars().then(data => data['vars']);
     const chatId = vars['supergroup_chat_id'];
-    const linkMessageId = vars['LINK_MESSAGE_ID'];
+    const lessonScheduleMessageId = vars['LESSON_SCHEDULE_MESSAGE_ID'];
 
     await axios.get(
-        baseBotRequestURL + `/unpinAllChatMessages?chat_id=-100${chatId}`
-    );
-    await axios.get(
-        baseBotRequestURL + `/pinChatMessage?chat_id=-100${chatId}&message_id=${linkMessageId}&disable_notification=true`
+        baseBotRequestURL + `/unpinChatMessage?chat_id=-100${chatId}&message_id=${lessonScheduleMessageId}`
     );
 }
 

@@ -8,9 +8,16 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/updateLinkMessageId', async (req, res) => {
-    const newLinkMessageId = req.body.newLinkMessageId;
+    const newMessageId = req.body.newLinkMessageId;
 
-    await db.updateLinkMessageId(newLinkMessageId);
+    await db.updateLinkMessageId(newMessageId);
+    res.sendStatus(200);
+});
+
+router.post('/updateLessonScheduleMessageId', async (req, res) => {
+    const newMessageId = req.body.newLessonScheduleMessageId;
+
+    await db.updateLessonScheduleMessageId(newMessageId);
     res.sendStatus(200);
 });
 
