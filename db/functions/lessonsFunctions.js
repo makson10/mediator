@@ -1,4 +1,6 @@
+const { default: axios } = require('axios');
 const client = require('../../mongoClient');
+const { getVars } = require('./varsFunctions');
 
 const getLessons = async () => {
     await client.connect();
@@ -32,31 +34,19 @@ const insertLinksToLessons = async (lessonLinks) => {
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    const [scheduleFromDb] = await collection.find({}).toArray();
-    const existLesson = scheduleFromDb.lessons;
+    const [schedule] = await collection.find({}).toArray();
+    const existLesson = schedule.lessons;
+    const newLessons = existLesson;
 
-    const newLessons = await existLesson.map((lesson, index) => {
-        if (lessonLinks[index][1] === undefined && existLesson.length === lessonLinks.length) {
-            lesson.link = lessonLinks[index][0];
-            return lesson;
-        } else {
-            if (index > lessonLinks.length - 1) return;
-            const firstLessonName = lesson.title?.trim().toLowerCase();
-            const secondLessonName = lessonLinks[index][0]?.trim().toLowerCase();
-
-            if (firstLessonName === secondLessonName) {
-                lesson.link = lessonLinks[index][1];
-            }
-
-            return lesson;
-        }
-    });
+    for (let i = 0; i < existLesson.length; i++) {
+        newLessons[i].link = lessonLinks[i];
+    }
 
     await collection
         .deleteOne({ lessons: { $exists: true } })
         .catch(console.error);
     await collection
-        .insertOne({ lessons: newLessons, dayTitle: scheduleFromDb.dayTitle })
+        .insertOne({ lessons: newLessons, dayTitle: schedule.dayTitle })
         .catch(console.error)
         .finally(() => client.close());
 }
