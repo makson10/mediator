@@ -23,14 +23,14 @@ const getHomeworksToToday = async (homeworks) => {
 
 const getHomeworksWithDate = async (homeworks) => {
     const homeworksWithDate = homeworks.filter(
-        (homework) => homework['lessonTitle'].match(dateRegex)
+        (homework) => homework.lessonTitle.match(dateRegex)
     );
 
     return homeworksWithDate;
 }
 
 const extractHomeworkDayAndMonth = (homework) => {
-    const homeworkDate = homework['lessonTitle'].match(dateRegex);
+    const homeworkDate = homework.lessonTitle.match(dateRegex);
     let [homeworkDay, homeworkMonth] = homeworkDate[0].split('.');
     homeworkDay = +homeworkDay;
     homeworkMonth = +homeworkMonth;
@@ -59,12 +59,6 @@ const makeBubbleSorting = async (homeworks) => {
                 swaped = true;
             }
         }
-
-        if (!swaped) return;
-    }
-
-    for (let i = 0; i < hwAmount - 1; i++) {
-        let swaped = false;
 
         for (let j = 0; j < hwAmount - i - 1; j++) {
             const homework = homeworks[j];
