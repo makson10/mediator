@@ -2,7 +2,7 @@ const { getVars, updateLinkMessageId, updateLessonScheduleMessageId } = require(
 const { getLessons, insertLessonsToDB, insertLinksToLessons, unpinLessonsScheduleMessage } = require('./functions/lessonsFunctions');
 const { getHWs, insertHWToDB, deleteHW, deleteAllHw, returnLastDeletedLink } = require('./functions/homeworkFunctions');
 const { sortingHw } = require('./functions/hwSortingFunctions');
-
+const { loginUser, getUserChatId, getUserSettings, setNewSettings } = require('./functions/accountsFunction');
 
 module.exports = {
     getVars,
@@ -18,4 +18,8 @@ module.exports = {
     returnLastDeletedLink,
     unpinLessonsScheduleMessage,
     sortingHw,
+    loginUser,
+    getUserChatId,
+    getUserSettings,
+    setNewSettings,
 };

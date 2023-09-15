@@ -1,7 +1,7 @@
 const client = require('../../mongoClient');
 
 const getHWs = async () => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('hw');
 
@@ -9,19 +9,20 @@ const getHWs = async () => {
         .find({})
         .toArray()
         .catch(console.error)
-        .finally(() => client.close());
+        // .finally(() => client.close());
 
     return hw;
 }
 
 const insertHWToDB = async (newHw) => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('hw');
 
     await collection.updateOne(
         { homeworks: { $exists: true } }, { $push: { homeworks: newHw } }
-    ).catch(console.error).finally(() => client.close());
+    ).catch(console.error)
+    // .finally(() => client.close());
 }
 
 const deleteHwFromDB = async (hwName) => {
@@ -79,25 +80,26 @@ const addDeletedHwToHistory = async (deletedHwName) => {
 }
 
 const deleteHW = async (hwName) => {
-    await client.connect();
+    // await client.connect();
 
     await addDeletedHwToHistory(hwName);
     await deleteHwFromDB(hwName);
 }
 
 const deleteAllHw = async () => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const hwCollection = db.collection('hw');
 
     await hwCollection.updateOne(
         { homeworks: { $exists: true } },
         { $set: { homeworks: [] } }
-    ).catch(console.error).finally(() => client.close());
+    ).catch(console.error)
+    // .finally(() => client.close());
 }
 
 const returnLastDeletedLink = async () => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const hwCollection = db.collection('hw');
     const historyCollection = db.collection('history');

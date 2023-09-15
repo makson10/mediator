@@ -3,20 +3,22 @@ const client = require('../../mongoClient');
 const { getVars } = require('./varsFunctions');
 
 const getLessons = async () => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
-    const [lessons] = await collection
-        .find({}).toArray()
+    const lessons = await collection
+        .find({})
+        .toArray()
+        .then(res => res[0])
         .catch(console.error)
-        .finally(() => client.close());;
+        // .finally(() => client.close());
 
     return lessons;
 }
 
 const insertLessonsToDB = async (newLessons) => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
@@ -26,11 +28,11 @@ const insertLessonsToDB = async (newLessons) => {
     await collection
         .insertOne(newLessons)
         .catch(console.error)
-        .finally(() => client.close());
+        // .finally(() => client.close());
 }
 
 const insertLinksToLessons = async (lessonLinks) => {
-    await client.connect();
+    // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('lessons');
 
@@ -43,19 +45,19 @@ const insertLinksToLessons = async (lessonLinks) => {
     }
 
     await collection
-        .deleteOne({ lessons: { $exists: true } })
+        .deleteMany({ lessons: { $exists: true } })
         .catch(console.error);
     await collection
         .insertOne({ lessons: newLessons, dayTitle: schedule.dayTitle })
         .catch(console.error)
-        .finally(() => client.close());
+        // .finally(() => client.close());
 }
 
 const unpinLessonsScheduleMessage = async () => {
     const baseBotRequestURL = 'https://api.telegram.org/bot' + process.env.TELEGRAM_BOT_TOKEN;
     const vars = await getVars().then(data => data['vars']);
-    const chatId = vars['supergroup_chat_id'];
-    const lessonScheduleMessageId = vars['LESSON_SCHEDULE_MESSAGE_ID'];
+    const chatId = vars.supergroup_chat_id;
+    const lessonScheduleMessageId = vars.LESSON_SCHEDULE_MESSAGE_ID;
 
     await axios.get(
         baseBotRequestURL + `/unpinChatMessage?chat_id=-100${chatId}&message_id=${lessonScheduleMessageId}`

@@ -13,7 +13,8 @@
 		{ "src": "/lessons/(.*)", "dest": "server.js" },
 		{ "src": "/hw/(.*)", "dest": "server.js" },
 		{ "src": "/vars/(.*)", "dest": "server.js" },
-		{ "src": "/history/(.*)", "dest": "server.js" }
+		{ "src": "/history/(.*)", "dest": "server.js" },
+		{ "src": "/accounts/(.*)", "dest": "server.js" }
 	],
 	"crons": [
 		{
