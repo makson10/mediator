@@ -115,7 +115,8 @@ const returnLastDeletedLink = async () => {
 
     await historyCollection.updateOne(
         { history: { $exists: true } }, { $pop: { history: 1 } }
-    ).catch(console.error).finally(() => client.close());
+    ).catch(console.error);
+    // .finally(() => client.close());
 
     return true;
 }
