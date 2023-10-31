@@ -1,6 +1,24 @@
-const { getVars, updateLinkMessageId, updateLessonScheduleMessageId } = require('./functions/varsFunctions');
-const { getLessons, insertLessonsToDB, insertLinksToLessons, unpinLessonsScheduleMessage } = require('./functions/lessonsFunctions');
-const { getHWs, insertHWToDB, deleteHW, deleteAllHw, returnLastDeletedLink } = require('./functions/homeworkFunctions');
+const {
+    getVars,
+    updateLinkMessageId,
+    updateLessonScheduleMessageId
+} = require('./functions/varsFunctions');
+const {
+    getLessons,
+    insertLessonsToDB,
+    addLessonToSchedule,
+    removeLessonFromSchedule,
+    insertLinksToLessons,
+    unpinLessonsScheduleMessage
+} = require('./functions/lessonsFunctions');
+const {
+    getHWs,
+    insertHwToDB,
+    deleteHW,
+    deleteAllHw,
+    returnLastDeletedLink,
+    removeOldHwLinks
+} = require('./functions/homeworkFunctions');
 const { sortingHw } = require('./functions/hwSortingFunctions');
 const { loginUser, getUserChatId, getUserSettings, setNewSettings } = require('./functions/accountsFunction');
 
@@ -8,9 +26,11 @@ module.exports = {
     getVars,
     updateLinkMessageId,
     updateLessonScheduleMessageId,
+    addLessonToSchedule,
+    removeLessonFromSchedule,
     insertLinksToLessons,
     getHWs,
-    insertHWToDB,
+    insertHwToDB,
     deleteHW,
     getLessons,
     insertLessonsToDB,
@@ -22,4 +42,5 @@ module.exports = {
     getUserChatId,
     getUserSettings,
     setNewSettings,
+    removeOldHwLinks,
 };

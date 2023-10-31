@@ -14,6 +14,20 @@ router.post('/updateLessons', async (req, res) => {
     res.sendStatus(200);
 });
 
+router.post('/addLesson', async (req, res) => {
+    const newLesson = req.body.newLesson;
+
+    await db.addLessonToSchedule(newLesson);
+    res.sendStatus(200);
+});
+
+router.post('/removeLesson', async (req, res) => {
+    const lessonTitle = req.body.lessonTitle;
+
+    await db.removeLessonFromSchedule(lessonTitle);
+    res.sendStatus(200);
+});
+
 router.post('/addLinks', async (req, res) => {
     const lessonLinks = req.body.lessonLinks;
 

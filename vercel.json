@@ -15,11 +15,5 @@
 		{ "src": "/vars/(.*)", "dest": "server.js" },
 		{ "src": "/history/(.*)", "dest": "server.js" },
 		{ "src": "/accounts/(.*)", "dest": "server.js" }
-	],
-	"crons": [
-		{
-			"path": "/lessons/unpinLessonsScheduleMessage",
-			"schedule": "0 14 * * 1-5"
-		}
 	]
 }

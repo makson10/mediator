@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
 router.post('/addHw', async (req, res) => {
     const hw = req.body;
 
-    await db.insertHWToDB(hw);
+    await db.insertHwToDB(hw);
     res.sendStatus(200);
 });
 
@@ -24,6 +24,11 @@ router.post('/delete', async (req, res) => {
 
 router.post('/deleteAllHw', async (req, res) => {
     await db.deleteAllHw();
+    res.sendStatus(200);
+});
+
+router.post('/removeOldHwLinks', async (req, res) => {
+    await db.removeOldHwLinks();
     res.sendStatus(200);
 });
 

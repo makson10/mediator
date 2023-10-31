@@ -1,4 +1,9 @@
+const { default: axios } = require('axios');
 const client = require('../../mongoClient');
+const { getVars } = require('./varsFunctions');
+
+const dateRegex = /[0-3][0-9].[0-1][0-9]/gm;
+const todayDate = new Date();
 
 const getHWs = async () => {
     // await client.connect();
@@ -9,12 +14,12 @@ const getHWs = async () => {
         .find({})
         .toArray()
         .catch(console.error)
-        // .finally(() => client.close());
+    // .finally(() => client.close());
 
     return hw;
 }
 
-const insertHWToDB = async (newHw) => {
+const insertHwToDB = async (newHw) => {
     // await client.connect();
     const db = client.db('mediatorDB');
     const collection = db.collection('hw');
@@ -23,6 +28,16 @@ const insertHWToDB = async (newHw) => {
         { homeworks: { $exists: true } }, { $push: { homeworks: newHw } }
     ).catch(console.error)
     // .finally(() => client.close());
+}
+
+const insertNewHwToDB = async (newHw) => {
+    const db = client.db('mediatorDB');
+    const hwCollection = db.collection('hw');
+
+    await hwCollection.updateOne(
+        { homeworks: { $exists: true } },
+        { $set: { homeworks: newHw } }
+    ).catch(console.error);
 }
 
 const deleteHwFromDB = async (hwName) => {
@@ -121,10 +136,46 @@ const returnLastDeletedLink = async () => {
     return true;
 }
 
+const sendReplyMessageForDeletedHw = async (hwLink) => {
+    const baseBotRequestURL = 'https://api.telegram.org/bot' + process.env.TELEGRAM_BOT_TOKEN;
+    const supergroupId = await getVars().then(vars => vars['vars']['supergroup_chat_id']);
+    const baseHwURL = 'https://t.me/c/' + supergroupId + '/';
+    const hwMessageId = hwLink.replace(baseHwURL, '');
+
+    await axios.get(
+        baseBotRequestURL + `/sendMessage?chat_id=-100${supergroupId}&text=%2E&reply_to_message_id=${hwMessageId}`
+    );
+}
+
+const removeOldHwLinks = async () => {
+    const todayDay = todayDate.getDate();
+    const todayMonth = todayDate.getMonth() + 1;
+    const hws = await getHWs().then(data => data['homeworks']);
+
+    const promiseChain = await hws.map(async (hw) => {
+        const hwTitle = hw.lessonTitle;
+        const homeworkDate = hwTitle.match(dateRegex);
+        if (!homeworkDate) return hw;
+
+        let [homeworkDay, homeworkMonth] = homeworkDate[0].split('.');
+        [homeworkDay, homeworkMonth] = [+homeworkDay, +homeworkMonth];
+
+        if (homeworkDay <= todayDay && homeworkMonth <= todayMonth) {
+            return sendReplyMessageForDeletedHw(hw.link);
+        }
+
+        return hw;
+    });
+
+    const newHw = (await Promise.all(promiseChain)).filter(hw => !!hw);
+    await insertNewHwToDB(newHw);
+}
+
 module.exports = {
     getHWs,
-    insertHWToDB,
+    insertHwToDB,
     deleteHW,
     deleteAllHw,
     returnLastDeletedLink,
+    removeOldHwLinks,
 }
