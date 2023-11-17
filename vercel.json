@@ -10,6 +10,7 @@
 		{ "src": "/lessons", "dest": "server.js" },
 		{ "src": "/hw", "dest": "server.js" },
 		{ "src": "/vars", "dest": "server.js" },
+		{ "src": "/accounts", "dest": "server.js" },
 		{ "src": "/lessons/(.*)", "dest": "server.js" },
 		{ "src": "/hw/(.*)", "dest": "server.js" },
 		{ "src": "/vars/(.*)", "dest": "server.js" },

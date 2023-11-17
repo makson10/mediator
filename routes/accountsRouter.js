@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
 
+router.get('/', async (req, res) => {
+    const accounts = await db.getAccounts();
+    res.status(200).send(accounts);
+});
+
 router.post('/login', async (req, res) => {
     const userCredentials = req.body;
 

@@ -105,6 +105,4 @@ const sortingHw = async (homeworks) => {
     return sortedHomeworks;
 }
 
-module.exports = {
-    sortingHw,
-}
+module.exports = { sortingHw }

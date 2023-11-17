@@ -20,7 +20,7 @@ const {
     removeOldHwLinks
 } = require('./functions/homeworkFunctions');
 const { sortingHw } = require('./functions/hwSortingFunctions');
-const { loginUser, getUserChatId, getUserSettings, setNewSettings } = require('./functions/accountsFunction');
+const { getAccounts, loginUser, getUserChatId, getUserSettings, setNewSettings } = require('./functions/accountsFunction');
 
 module.exports = {
     getVars,
@@ -38,6 +38,7 @@ module.exports = {
     returnLastDeletedLink,
     unpinLessonsScheduleMessage,
     sortingHw,
+    getAccounts,
     loginUser,
     getUserChatId,
     getUserSettings,

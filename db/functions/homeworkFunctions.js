@@ -3,7 +3,6 @@ const client = require('../../mongoClient');
 const { getVars } = require('./varsFunctions');
 
 const dateRegex = /[0-3][0-9].[0-1][0-9]/gm;
-const todayDate = new Date();
 
 const getHWs = async () => {
     // await client.connect();
@@ -148,6 +147,8 @@ const sendReplyMessageForDeletedHw = async (hwLink) => {
 }
 
 const removeOldHwLinks = async () => {
+    const todayDate = new Date();
+
     const todayDay = todayDate.getDate();
     const todayMonth = todayDate.getMonth() + 1;
     const hws = await getHWs().then(data => data['homeworks']);

@@ -56,6 +56,7 @@ const setNewSettings = async (appId, newSettings) => {
 }
 
 module.exports = {
+    getAccounts,
     loginUser,
     getUserChatId,
     getUserSettings,
